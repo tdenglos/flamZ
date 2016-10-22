@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js' type = "text/javascript"></script>
+</head>
+<body>
+
+<script>
+// DOJO ANALYTICS start (ensure this is just after <body> tag)
+var apiDomain="http://localhost:8080";
+var websiteId = 1; //set your dojo-websiteId here
+var pageUrl = window.location.pathname;
+var dataLayerUrl = apiDomain + "/datalayer?website=" + websiteId + "&page=" + pageUrl;
+document.write("<script type='text/javascript' src='"+ dataLayerUrl + "'><\/scr" + "ipt>");
+</script>
+
+My body tag contains an object called 'dataLayer' with the following definition :
+
+<script type='text/javascript'>
+
+	document.write(dataLayer[0].toString());
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>Demo</title>
+
+<link rel="stylesheet" href="/css/application.css">
+
+
+
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width" />
+<base href="/" />
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/css/bootstrap.min.css" />
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+	src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="home as home">
+	
+	
+	
+	<h1>--- flamZ ---</h1>
+	
+	
+	
+	<div class="container" ng-show="!home.authenticated">
+		<h2>Login</h2>
+<!--		<p>With Facebook: <a href="/login/facebook">click here</a>
+		<p>With Github: <a href="/login/github">click here</a> -->
+		<p>With Google: <a href="/login/google">click here</a>
+	</div>
+	
+	
+	
+	<div class="container" ng-show="home.authenticated">
+		<div>
+			<div id="bloc1">
+				<button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+			</div>
+			<div id="bloc2">
+				<p><b><span ng-bind="home.userName"></span> <span ng-bind="home.userSurname"></span></b><br>
+				<span ng-bind="home.userEmail"><br> flamZ account: <span ng-bind="home.userId">
+				<p>
+			</div>
+		</div>
+	<!--	<h2>Login</h2>
+		Logged in as: <span ng-bind="home.userGoogleId"></span>
+		<div>
+			<button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+		</div>-->
+		<br>
+	</div>
+
+	<div class="container" ng-show="home.authenticated * home.betatester">
+		<h2>My flamZ account</h2>
+		<form action="/private/account.html">
+    		<input type="submit" value="Manage my tags!" class="btn btn-primary" />
+		</form>
+		<!--<
+		button click="/private/account.html" class="btn btn-primary">Manage my tags!</button>
+		<p><a href="/private/account.html"> >>> Manage my tags <<< </a></p>
+	-->
+	</div>
+	
+	<div class="container text-danger" ng-show="home.error">
+		There was an error (bad credentials).
+	</div>
+	
+	
+<div class="container" ng-show="home.authenticated * !home.betatester">
+
+	<span ng-bind="home.addAccountPostDataResponse"></span><br>
+	<span ng-bind="home.addAccountPostDataResponseDetails"></span>
+	
+</div>
+
+
+
+	
+<script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
+<script type="text/javascript">
+	angular
+		.module("app", [])
+			
+			.config(
+				
+				function($httpProvider) {
+					$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+				}
+			)
+			
+			.controller("home", function($http, $location) {
+	
+
+				var self = this;
+				this.addAccountPostDataResponse="";
+				this.addAccountPostDataResponseDetails="";
+
+
+				var userGoogleId="";
+				var userEmail ="User email";
+
+
+				var userName = "Name";
+				var userSurname = "Surname";
+				var userId = "User FlamZ account number";
+				var userPictureUrl = "";
+
+				self.updateVariables = function() {
+
+					self.userEmail = userEmail;
+					self.userName = userName;
+					self.userSurname = userSurname;
+					self.userId = userId;
+					self.userGoogleId = userGoogleId;
+					self.userPictureUrl = userPictureUrl;
+				};
+				self.updateVariables();
+
+
+
+				self.addAccount = function () {
+
+		            var data = $.param({
+		                //googleid: $scope.userGoogleId
+		            });	        
+		            var config = {
+		                headers : {
+		                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+		                }
+		            };
+		            $http.post('http://localhost:8080/ws/addaccount', data, config)
+			            .success(function (data) {
+			                self.addAccountPostDataResponse = data.result;
+			            }).error(
+			            	function (data, status, header, config) {
+				                self.addAccountPostDataResponseDetails = 
+				                    "--- status: " + data.status +
+				                    "--- error: " + data.error +
+				                    "--- message: " + data.message ;
+			            	}
+			            )
+		            ;
+	        	};			
+	        	self.addAccount();		
+
+
+				$http.get("/user").success(function(data) {
+					if (data.googleid) {
+						self.userGoogleId = data.googleid;
+						self.betatester = (data.betatester=="true");
+						self.authenticated = true;
+					} else {
+						self.user = "N/A";
+						self.authenticated = false;
+					}
+				}).error(function() {
+					self.user = "N/A";
+					self.authenticated = false;
+					self.error = true;
+				});
+	
+				self.logout = function() {
+					$http.post('logout', {}).success(function() {
+						self.authenticated = false;
+						$location.path("/");
+					}).error(function(data) {
+						console.log("Logout failed")
+						self.authenticated = false;
+						self.error = true;
+					});
+				};
+
+
+	        	self.getPrincipal =function(){
+
+					var url = 'http://localhost:8080/ws/principal' ;
+			        return $http({
+				  		method: 'GET',
+					  	url: url
+					}).then(function successCallback(response) {
+						if (response.data.userAuthentication) {
+						userName = response.data.userAuthentication.details.given_name;
+						userSurname = response.data.userAuthentication.details.family_name;
+					    userEmail = response.data.userAuthentication.details.email;
+					    userPictureUrl = response.data.userAuthentication.details.picture;
+						}
+
+				  	}, function errorCallback(response) {
+				  	});		        		
+				};
+				self.getPrincipal().then(function(result){
+					self.updateVariables();
+				});
+
+			});
+</script>
+</body>
+</html>
