@@ -8,8 +8,8 @@ security:
 
 google:
   client:
-    clientId: 979328690861-nbc4i7rkmc419q04422naev6b2vsojs5.apps.googleusercontent.com
-    clientSecret: _97TSZbfTSQLe0loTn7BnxFR
+    clientId: **************
+    clientSecret: **************
     accessTokenUri: https://accounts.google.com/o/oauth2/token
     userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
     scope: openid email profile 
@@ -20,8 +20,8 @@ google:
     userInfoUri: https://www.googleapis.com/userinfo/v2/me    
 #facebook:
 #  client:
-#    clientId: 233668646673605
-#    clientSecret: 33b17e044ee6a4fa383f46ec6e28ea1d
+#    clientId: **************
+#    clientSecret: **************
 #    accessTokenUri: https://graph.facebook.com/oauth/access_token
 #    userAuthorizationUri: https://www.facebook.com/dialog/oauth
 #    tokenName: oauth_token
@@ -31,8 +31,8 @@ google:
 #    userInfoUri: https://graph.facebook.com/me
 #github:
 #  client:
-#    clientId: bd1c0a783ccdd1c9b9e4
-#    clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
+#    clientId: **************
+#    clientSecret: **************
 #    accessTokenUri: https://github.com/login/oauth/access_token
 #    userAuthorizationUri: https://github.com/login/oauth/authorize
 #    clientAuthenticationScheme: form
